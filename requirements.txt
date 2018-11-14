@@ -1,0 +1,6 @@
+tensorflow
+pytest
+git+https://github.com/datalogai/recurrentshop.git
+git+https://github.com/farizrahman4u/seq2seq.git
+decorator
+pandas
