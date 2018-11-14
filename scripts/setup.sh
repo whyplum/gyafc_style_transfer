@@ -3,7 +3,7 @@
 ## Lib Setup ##
 ###############
 # verify right directory
-cd text_style_classification
+cd gyafc_style_transfer
 # install pip3
 sudo apt-get update
 sudo apt-get -y install python3-pip
