@@ -21,9 +21,9 @@ def parse_arguments():
     p.add_argument('-ln', '--log-name', type=str, default="console.log")
 
     # preprocessing
-    p.add_argument('-ep', '--embedding-path', type=str, default="C:/Users/t-inoren/source/text_style_transfer/data/glove.42B.300d/filt.glove.42B.300d.txt")
+    p.add_argument('-ep', '--embedding-path', type=str, default="data/glove.42B.300d/filt.glove.42B.300d.txt")
     p.add_argument('-ed', '--embedding-size', type=int, default=300)
-    p.add_argument('-dp', '--data-dir', type=str, default="C:/Users/t-inoren/source/text_style_transfer/data/E&M")
+    p.add_argument('-dp', '--data-dir', type=str, default="data/E&M")
 
     # model
     # p.add_argument('-vs', '--vocab-size', type=int, default=1000)

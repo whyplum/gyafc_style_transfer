@@ -5,7 +5,7 @@ Validate dataset preprocessing
 from src.data_preprocess import *
 from os.path import join
 
-DATABASE = "C:\\Users\\t-inoren\\source\\text_style_transfer\\data"
+DATABASE = "data"
 EMBEDDING = join(DATABASE, "glove.42B.300d", "filt.glove.42B.300d.txt")
 EMBEDDING_DIMS = 300 # determined by glove
 DATA = join(DATABASE, "E&M")
