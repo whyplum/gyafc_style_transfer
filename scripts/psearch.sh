@@ -3,7 +3,7 @@
 ## Parameter Search ##
 ######################
 # verify right directory
-cd text_style_transfer
+cd gyafc_style_transfer
 # create virtualenv
 source .venv/bin/activate
 # verify library is found

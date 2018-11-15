@@ -14,7 +14,7 @@ from src.utils import configure_logger, deep_dict_defaults, slice_labels_to_batc
 def parse_arguments():
     p = argparse.ArgumentParser()
 
-    p.add_argument('-d', '--debug', action="store_true", default=True)
+    p.add_argument('-d', '--debug', action="store_true", default=False)
 
     # logs
     p.add_argument('-sd', '--save-dir', type=str, default="save")
@@ -111,9 +111,6 @@ def train(args):
                     .run(feed_dict=feed,
                          fetches=[model._update_step, model._loss, model._accuracy])
 
-                # calculate accuracy
-
-
                 # save loss and accuracy
                 for i in range(1, len(metrics) + 1):
                     batch_history[metrics[i - 1]].append(result[i].flatten())
@@ -142,25 +139,25 @@ def train(args):
                         model._inputs: data["tune"]["sentences"], model._labels: data["tune"]["labels"]}
                 result = sess \
                     .run(feed_dict=feed,
-                         fetches=[model._loss])
+                         fetches=[model._loss, model._accuracy])
 
                 # save tune evaluation metrics
-                for i in range(2, len(metrics)):
-                    metric_eval_mean = np.mean(result[i - 2].flatten())
+                for i in range(len(metrics)):
+                    metric_eval_mean = np.mean(result[i].flatten())
                     global_history.loc[global_history.shape[0]] = ("tune", epoch_num, metrics[i], metric_eval_mean)
                     logger.info("Tune | Epoch %d | Metric %s | %.5f" % (epoch_num, metrics[i], metric_eval_mean))
 
-            # evaluate tune dataset
+        # evaluate tune dataset
         logger.info("Evaluating test set..")
         feed = {model._embedder: data["embedding"], model._input_lengths: data["test"]["sentence_lengths"],
                         model._inputs: data["test"]["sentences"], model._labels: data["test"]["labels"]}
         result = sess \
             .run(feed_dict=feed,
-                 fetches=[model._loss])
+                 fetches=[model._loss, model._accuracy])
 
         # save test evaluation metrics
-        for i in range(2, len(metrics)):
-            metric_eval_mean = np.mean(result[i - 2].flatten())
+        for i in range(len(metrics)):
+            metric_eval_mean = np.mean(result[i].flatten())
             global_history.loc[global_history.shape[0]] = ("test", None, metrics[i], metric_eval_mean)
             logger.info("Test | Metric %s | %.5f" % (metrics[i], metric_eval_mean))
 
