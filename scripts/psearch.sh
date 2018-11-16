@@ -15,6 +15,6 @@ python src/train.py -e 200 -b 100  -lr 0.00001 -sd save/b100_lr5
 python src/train.py -e 200 -b 500  -lr 0.001   -sd save/b500_lr3
 python src/train.py -e 200 -b 500  -lr 0.0001  -sd save/b500_lr4
 python src/train.py -e 200 -b 500  -lr 0.0001  -sd save/b500_lr5
-python src/train.py -e 200 -b 1000 -lr 0.001   -sd save/b500_lr3
-python src/train.py -e 200 -b 1000 -lr 0.0001  -sd save/b500_lr4
-python src/train.py -e 200 -b 1000 -lr 0.0001  -sd save/b500_lr5
+python src/train.py -e 200 -b 1000 -lr 0.001   -sd save/b1000_lr3
+python src/train.py -e 200 -b 1000 -lr 0.0001  -sd save/b1000_lr4
+python src/train.py -e 200 -b 1000 -lr 0.0001  -sd save/b1000_lr5
