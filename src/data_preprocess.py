@@ -79,7 +79,7 @@ def preprocess_dataset(formalsets, informalsets, embedding_file, embedding_dims,
 
         if data_type in ("tune", "test") and limit_evals > 0:
             formal_docs = formal_docs[:limit_evals // 2]
-            informal_docs = formal_docs[:limit_evals // 2]
+            informal_docs = informal_docs[:limit_evals // 2]
 
         docs = formal_docs + informal_docs
 

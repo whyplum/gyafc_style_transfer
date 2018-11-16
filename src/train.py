@@ -62,7 +62,6 @@ def train(args):
     data = preprocess_dataset(get_datasets(args.data_dir, "formal"), get_datasets(args.data_dir, "informal"),
                              args.embedding_path, args.embedding_size, args.limit_evals)
 
-    # split data results to train / tune / test
     X, X_len, Y = (data["train"][v] for v in ("sentences", "sentence_lengths", "labels"))
     logging.info("Found train/tune/test inputs of dims %s/%s/%s, embedder of dims %s"
                  % (X.shape, data["tune"]["sentences"].shape, data["test"]["sentences"].shape, data["embedding"].shape))
@@ -79,6 +78,7 @@ def train(args):
     logging.info("Shuffling data...")
     shuffle = lambda x, ax: np.take(x, shuffle_ind, axis=ax)
     shuff_X, shuff_X_len, shuff_Y = (shuffle(x, ax) for x, ax in ((X, 1), (X_len, 0), (Y, 0)))
+
 
     logger.info("Building Model and Saver...")
     model = GruClassifier(deep_dict_defaults({
@@ -109,10 +109,10 @@ def train(args):
                         model._inputs: batch_X, model._labels: batch_Y}
                 result = sess \
                     .run(feed_dict=feed,
-                         fetches=[model._update_step, model._loss, model._accuracy])
+                         fetches=[model._loss, model._accuracy, model._update_step, model._prediction])
 
                 # save loss and accuracy
-                for i in range(1, len(metrics) + 1):
+                for i in range(len(metrics)):
                     batch_history[metrics[i - 1]].append(result[i].flatten())
 
                 if args.debug and batch_num >= 1:
@@ -129,6 +129,7 @@ def train(args):
                 logger.info("Train | Epoch %d | Metric %s | %.5f" % (epoch_num, metrics[i - 1], metric_epoch_mean))
 
             if epoch_num % args.save_step == 0:
+
                 # save model and metrics checkpoint
                 global_history.to_pickle(os.path.join(args.save_dir, "metrics.pckl"))
                 saver.save(sess, os.path.join(args.save_dir, "e%d.ckpt" % epoch_num))
@@ -139,7 +140,7 @@ def train(args):
                         model._inputs: data["tune"]["sentences"], model._labels: data["tune"]["labels"]}
                 result = sess \
                     .run(feed_dict=feed,
-                         fetches=[model._loss, model._accuracy])
+                         fetches=[model._loss, model._accuracy, model._prediction])
 
                 # save tune evaluation metrics
                 for i in range(len(metrics)):
@@ -147,13 +148,13 @@ def train(args):
                     global_history.loc[global_history.shape[0]] = ("tune", epoch_num, metrics[i], metric_eval_mean)
                     logger.info("Tune | Epoch %d | Metric %s | %.5f" % (epoch_num, metrics[i], metric_eval_mean))
 
-        # evaluate tune dataset
+        # evaluate test dataset
         logger.info("Evaluating test set..")
         feed = {model._embedder: data["embedding"], model._input_lengths: data["test"]["sentence_lengths"],
                         model._inputs: data["test"]["sentences"], model._labels: data["test"]["labels"]}
         result = sess \
             .run(feed_dict=feed,
-                 fetches=[model._loss, model._accuracy])
+                 fetches=[model._loss, model._accuracy, model._prediction])
 
         # save test evaluation metrics
         for i in range(len(metrics)):
