@@ -11,7 +11,7 @@ from src.models import GruClassifier
 from src.data_preprocess import preprocess_dataset, get_datasets
 from src.utils import configure_logger, deep_dict_defaults, slice_labels_to_batches
 
-def parse_arguments():
+def parse_arguments(args=None):
     p = argparse.ArgumentParser()
 
     p.add_argument('-d', '--debug', action="store_true", default=False)
@@ -46,7 +46,7 @@ def parse_arguments():
     # p.add_argument('--output_classes', type=int, default=127)
     # p.add_argument('--num_layers', type=int, default=3)
 
-    args = p.parse_args()
+    args = p.parse_args(args)
     return args
 
 def train(args):
