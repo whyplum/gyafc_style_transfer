@@ -28,7 +28,7 @@ def parse_arguments(args=None):
     # model
     # p.add_argument('-vs', '--vocab-size', type=int, default=1000)
     # p.add_argument('-mt', '--max-time', type=int, default=25)
-    p.add_argument('-lr', '--learning-rate', type=float, default=1e-3)
+    p.add_argument('-lr', '--learning-rate', type=float, default=1e-5)
     p.add_argument('-ru', '--num-rnn-units', type=int, default=16)
     p.add_argument('-cl', '--classifier-hidden-layers', nargs='+', type=int, default=[8, 4])
     p.add_argument('-mg', '--max-gradient-norm', type=float, default=1)
@@ -113,20 +113,20 @@ def train(args):
 
                 # save loss and accuracy
                 for i in range(len(metrics)):
-                    batch_history[metrics[i - 1]].append(result[i].flatten())
+                    batch_history[metrics[i]].append(result[i].flatten())
 
                 if args.debug and batch_num >= 1:
                     logging.info("Debug mode: breaking after 2 batches..")
                     break
 
             # save loss and accuracy
-            for i in range(1, len(metrics) + 1):
+            for i in range(len(metrics)):
                 # calculate epoch mean metrics
-                metric_epoch_mean = np.mean(np.concatenate(batch_history[metrics[i - 1]]))
+                metric_epoch_mean = np.mean(np.concatenate(batch_history[metrics[i]]))
 
                 # save and log it
-                global_history.loc[global_history.shape[0]] = ("train", epoch_num, metrics[i - 1], metric_epoch_mean)
-                logger.info("Train | Epoch %d | Metric %s | %.5f" % (epoch_num, metrics[i - 1], metric_epoch_mean))
+                global_history.loc[global_history.shape[0]] = ("train", epoch_num, metrics[i], metric_epoch_mean)
+                logger.info("Train | Epoch %d | Metric %s | %.5f" % (epoch_num, metrics[i], metric_epoch_mean))
 
             if epoch_num % args.save_step == 0:
 
