@@ -85,8 +85,6 @@ def eval_step(sess, model, saver,
               embedder, X, X_len, Y, batch_num_vector,
               data_type, debug=False, update=False, save=False):
 
-    logging.info("Evaluating %s set.." % data_type)
-
     for batch_num in np.unique(batch_num_vector):
 
         # extract batch data
@@ -174,7 +172,7 @@ def train(args):
                 eval_step(sess, model, saver,
                           ghistory, gstep,
                           data["embedding"], trn_X, trn_X_len, trn_Y, trn_batches,
-                          "train", args.debug, update=False)
+                          "train", args.debug, update=True)
 
                 # evaluate tune dataset
                 if epoch_num % args.save_step == 0:
