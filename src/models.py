@@ -297,6 +297,32 @@ class GruClassifier(Model):
         self._accuracy = tf.reduce_mean(tf.cast(tf.equal(perc_pred_choice, self._labels), tf.float32))
         tf.summary.scalar('accuracy', self._accuracy)
 
+    def step(self, sess, embedder, inputs, input_lengts, labels, update=True):
+
+        feed = {
+            self._embedder: embedder,
+            self._inputs: inputs,
+            self._input_lengths: input_lengts,
+            self._labels: labels}
+
+        fetches = {
+            "loss": self._loss,
+            "accuracy": self._accuracy
+        }
+
+        if update:
+            fetches["update_step"] = self._update_step
+
+        results = sess.run(feed_dict=feed, fetches=fetches)
+
+        if update:
+            results.pop("update_step")
+
+        # average metrics
+        metrics = {k: np.mean(v.flatten()) for k,v in results.items()}
+
+        return metrics
+
     def test(self, mock_size=100, embedder=None, input_sentences=None, input_lengths=None, sentence_labels=None):
         """
         :param mock_size: number of mock records to generate, in case input is None

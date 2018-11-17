@@ -171,6 +171,7 @@ venv.bak/
 # tmp dirs to save model and parameters
 tmp
 save
+results
 
 # data
 glove.42B.300d.txt
